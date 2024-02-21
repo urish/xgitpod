@@ -3,8 +3,9 @@ FROM gitpod/workspace-full-vnc
 ARG MAGIC_VERSION=8.3.460
 ARG NETGEN_VERSION=1.5.270
 ARG KLAYOUT_VERSION=0.28.17
+ARG XSCHEM_VERSION=3.4.4
 
-RUN sudo apt-get update && sudo apt-get install -y xschem ngspice
+RUN sudo apt-get update && sudo apt-get install -y ngspice
 
 RUN git clone -b $MAGIC_VERSION https://github.com/RTimothyEdwards/magic && \
     cd magic && \
@@ -19,6 +20,14 @@ RUN git clone -b $NETGEN_VERSION https://github.com/RTimothyEdwards/netgen netge
     make -j4 && \
     sudo make install && \
     cd .. && sudo rm -rf netgen
+
+RUN sudo apt-get install -y flex bison libxpm4 libxpm-dev
+RUN git clone -b $XSCHEM_VERSION https://github.com/StefanSchippers/xschem xschem && \
+    cd xschem && \
+    ./configure && \
+    make -j4 && \
+    sudo make install && \
+    cd .. && rm -rf xschem
 
 RUN curl -o /tmp/klayout.deb https://www.klayout.org/downloads/Ubuntu-22/klayout_$KLAYOUT_VERSION-1_amd64.deb && \
     sudo apt-get install -y /tmp/klayout.deb && \
